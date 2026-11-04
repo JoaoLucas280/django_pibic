@@ -11,7 +11,7 @@
   </div>
   <div class="d-flex gap-2">
     <a href="{% url 'curso:course_update' course.pk %}" class="btn btn-outline-secondary">Editar curso</a>
-    <a href="{% url 'curso:semester_create' %}" class="btn btn-primary">Novo semestre</a>
+    <a href="{% url 'curso:semester_create' %}?course={{ course.pk }}" class="btn btn-cta">Novo semestre</a>
   </div>
 </div>
 
@@ -22,7 +22,7 @@
     {% include "curso/partials/semester_card.html" with semester=semester %}
   {% empty %}
   <div class="col-12">
-    <div class="panel p-4 text-center text-muted">Este curso ainda não tem semestres. <a href="{% url 'curso:semester_create' %}">Cadastre o primeiro semestre</a>.</div>
+    <div class="panel p-4 text-center text-muted">Este curso ainda não tem semestres. <a href="{% url 'curso:semester_create' %}?course={{ course.pk }}">Cadastre o primeiro semestre</a>.</div>
   </div>
   {% endfor %}
 </div>

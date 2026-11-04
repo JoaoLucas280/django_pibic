@@ -1,5 +1,5 @@
 <tr id="student-row-{{ student.pk }}">
-  <td class="ps-3">{{ student.name }}</td>
+  <td class="ps-3"><a href="{% url 'aluno:student_detail' student.pk %}">{{ student.name }}</a></td>
   <td>{{ student.rgm }}</td>
   <td>{{ student.email }}</td>
   <td><a href="{% url 'curso:course_detail' student.course.pk %}">{{ student.course.name }}</a></td>

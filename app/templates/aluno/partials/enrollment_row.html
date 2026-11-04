@@ -1,0 +1,24 @@
+<tr id="enrollment-row-{{ enrollment.pk }}">
+  <td class="ps-3">
+    {% if enrollment.discipline.code %}<span class="text-muted">{{ enrollment.discipline.code }}</span> {% endif %}{{ enrollment.discipline.name }}
+  </td>
+  <td>{% if enrollment.grade is not None %}{{ enrollment.grade|floatformat:1 }}{% else %}<span class="text-muted">–</span>{% endif %}</td>
+  <td>{% if enrollment.attendance is not None %}{{ enrollment.attendance }}%{% else %}<span class="text-muted">–</span>{% endif %}</td>
+  <td>
+    {% with status=enrollment.status %}
+    <span class="badge {% if status == 'Aprovado' %}text-bg-success{% elif status == 'Cursando' %}text-bg-secondary{% else %}text-bg-danger{% endif %}">{{ status }}</span>
+    {% endwith %}
+  </td>
+  <td class="text-end pe-3 text-nowrap">
+    <button type="button" class="btn btn-sm btn-outline-secondary"
+      hx-get="{% url 'aluno:enrollment_update' enrollment.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Lançar nota e frequência"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Lançar nota</button>
+    <button type="button" class="btn btn-sm btn-outline-danger"
+      hx-get="{% url 'aluno:enrollment_delete' enrollment.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Excluir matrícula"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Excluir</button>
+  </td>
+</tr>

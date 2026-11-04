@@ -3,7 +3,7 @@
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <h1 class="h3 mb-0">{{ title }}</h1>
-  <a href="{% url 'curso:discipline_create' %}" class="btn btn-primary">Nova disciplina</a>
+  <a href="{% url 'curso:discipline_create' %}" class="btn btn-cta">Nova disciplina</a>
 </div>
 
 <div class="mb-3">{% include "partials/search.html" with placeholder="Buscar disciplina pelo nome" %}</div>

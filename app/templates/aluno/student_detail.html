@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ student.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-4">
+  <div>
+    <a href="{% url 'aluno:student_list' %}" class="small">Voltar para alunos</a>
+    <h1 class="h2 mb-1">{{ student.name }}</h1>
+    <p class="text-muted mb-0">
+      RGM {{ student.rgm }} · <a href="{% url 'curso:course_detail' student.course.pk %}">{{ student.course.name }}</a> · {{ student.email }}
+    </p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{% url 'aluno:report_card' student.pk %}" class="btn btn-outline-primary" target="_blank" rel="noopener">Boletim em PDF</a>
+    <a href="{% url 'aluno:enrollment_create' student.pk %}" class="btn btn-cta">Matricular em disciplina</a>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+  <div class="col"><div class="stat-card p-3 h-100">
+    <span class="stat-number d-block">{{ enrollments|length }}</span><span class="stat-label">Disciplinas</span>
+  </div></div>
+  <div class="col"><div class="stat-card p-3 h-100">
+    <span class="stat-number d-block">{{ approved }}</span><span class="stat-label">Aprovações</span>
+  </div></div>
+  <div class="col"><div class="stat-card p-3 h-100">
+    <span class="stat-number d-block">{% if average is not None %}{{ average|floatformat:1 }}{% else %}–{% endif %}</span>
+    <span class="stat-label">Média geral</span>
+  </div></div>
+  <div class="col"><div class="panel qr-card p-2 h-100 d-flex align-items-center gap-2">
+    <a href="{{ public_url }}" target="_blank" rel="noopener" class="qr-mini" aria-label="Abrir boletim público">{{ qr_code }}</a>
+    <span class="small"><strong class="d-block text-uppercase" style="color: var(--accent)">Boletim no celular</strong>Aponte a câmera para abrir o boletim</span>
+  </div></div>
+</div>
+
+<h2 class="h5 section-title mb-3">Boletim</h2>
+<div class="panel">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr><th class="ps-3">Disciplina</th><th>Nota</th><th>Frequência</th><th>Situação</th><th class="text-end pe-3">Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for enrollment in enrollments %}
+          {% include "aluno/partials/enrollment_row.html" %}
+        {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-4">
+          Nenhuma matrícula ainda. <a href="{% url 'aluno:enrollment_create' student.pk %}">Matricule o aluno na primeira disciplina</a>.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="small text-muted mt-2">
+  Aprovação: nota mínima {{ approval_grade|floatformat:1 }} e frequência mínima de {{ min_attendance }}% (LDB, art. 24).
+</p>
+{% endblock %}
