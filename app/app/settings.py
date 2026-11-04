@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'curso',
     'aluno',
     'django.contrib.admin',
@@ -40,6 +41,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+JAZZMIN_SETTINGS = {
+    'site_title': 'Gestão Acadêmica',
+    'site_header': 'Gestão Acadêmica',
+    'site_brand': 'Gestão Acadêmica',
+    'topmenu_links': [
+        {'name': 'Tela principal', 'url': '/cursos/'},
+    ],
+}
+
+JAZZMIN_UI_TWEAKS = {
+    'theme': 'flatly',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

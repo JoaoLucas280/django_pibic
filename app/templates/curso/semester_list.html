@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">{{ title }}</h1>
+  <a href="{% url 'curso:semester_create' %}" class="btn btn-primary">Novo semestre</a>
+</div>
+
+<div class="mb-3">{% include "partials/search.html" with placeholder="Buscar semestre pelo nome do curso" %}</div>
+
+<div class="panel">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr><th class="ps-3">Curso</th><th>Semestre</th><th>Disciplinas</th><th class="text-end pe-3">Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for semester in semesters %}
+        <tr>
+          <td class="ps-3">{{ semester.course.name }}</td>
+          <td><a href="{% url 'curso:semester_detail' semester.pk %}">{{ semester.number }}º semestre</a></td>
+          <td>{{ semester.disciplines.all|length }}</td>
+          <td class="text-end pe-3">
+            <a href="{% url 'curso:semester_update' semester.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+            <a href="{% url 'curso:semester_delete' semester.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted py-4">Nenhum semestre encontrado. <a href="{% url 'curso:semester_create' %}">Cadastre um semestre</a>.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "partials/pagination.html" %}
+{% endblock %}

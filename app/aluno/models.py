@@ -4,9 +4,10 @@ from curso.models import Course
 class Student(models.Model):
     name = models.CharField("Nome", max_length=100)
     email = models.EmailField("E-mail", unique=True)
+    rgm = models.CharField("RGM", max_length=7, unique=True)
     course = models.ForeignKey(
         Course,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="students",
         verbose_name="Curso",
     )

@@ -6,7 +6,8 @@ from .models import Course, Discipline, Semester
 class SemesterInline(admin.TabularInline):
     model = Semester
     extra = 1
-    fields = ("number",)
+    fields = ("number", "disciplines")
+    autocomplete_fields = ("disciplines",)
  
  
 @admin.register(Course)

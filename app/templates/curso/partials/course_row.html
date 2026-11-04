@@ -1,0 +1,16 @@
+<tr id="course-row-{{ course.pk }}">
+  <td class="ps-3"><a href="{% url 'curso:course_detail' course.pk %}">{{ course.name }}</a></td>
+  <td>{{ course.duration_semesters }} semestres</td>
+  <td class="text-end pe-3">
+    <button type="button" class="btn btn-sm btn-outline-secondary"
+      hx-get="{% url 'curso:course_update' course.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Editar curso"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Editar</button>
+    <button type="button" class="btn btn-sm btn-outline-danger"
+      hx-get="{% url 'curso:course_delete' course.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Excluir curso"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Excluir</button>
+  </td>
+</tr>

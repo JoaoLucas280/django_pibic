@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-4">
+  <div>
+    <a href="{% url 'curso:course_list' %}" class="small">Voltar para cursos</a>
+    <h1 class="h2 mb-1">{{ course.name }}</h1>
+    <p class="text-muted mb-0">Duração de {{ course.duration_semesters }} semestres</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'curso:course_update' course.pk %}" class="btn btn-outline-secondary">Editar curso</a>
+    <a href="{% url 'curso:semester_create' %}" class="btn btn-primary">Novo semestre</a>
+  </div>
+</div>
+
+<h2 class="h4 mb-3">Grade curricular</h2>
+
+<div class="row row-cols-1 row-cols-md-2 g-3">
+  {% for semester in course.semesters.all %}
+    {% include "curso/partials/semester_card.html" with semester=semester %}
+  {% empty %}
+  <div class="col-12">
+    <div class="panel p-4 text-center text-muted">Este curso ainda não tem semestres. <a href="{% url 'curso:semester_create' %}">Cadastre o primeiro semestre</a>.</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="modal fade" id="semester-edit-modal" tabindex="-1" aria-labelledby="semester-edit-modal-title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title fs-5" id="semester-edit-modal-title">Editar semestre</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body" id="semester-modal-content">
+        <p class="text-muted mb-0">Carregando formulário...</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.body.addEventListener("semesterUpdated", function () {
+    const modalElement = document.getElementById("semester-edit-modal");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+      modal.hide();
+    }
+  });
+</script>
+{% endblock %}

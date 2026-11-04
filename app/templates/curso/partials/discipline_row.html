@@ -1,0 +1,17 @@
+<tr id="discipline-row-{{ discipline.pk }}">
+  <td class="ps-3">{{ discipline.name }}</td>
+  <td>{{ discipline.code|default:"-" }}</td>
+  <td>{{ discipline.class_load }} h</td>
+  <td class="text-end pe-3">
+    <button type="button" class="btn btn-sm btn-outline-secondary"
+      hx-get="{% url 'curso:discipline_update' discipline.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Editar disciplina"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Editar</button>
+    <button type="button" class="btn btn-sm btn-outline-danger"
+      hx-get="{% url 'curso:discipline_delete' discipline.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Excluir disciplina"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Excluir</button>
+  </td>
+</tr>

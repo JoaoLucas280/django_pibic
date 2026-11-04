@@ -1,0 +1,26 @@
+<div class="col" id="semester-card-{{ semester.pk }}">
+  <section class="panel semester p-3 h-100">
+    <div class="d-flex justify-content-between align-items-baseline mb-2">
+      <h3 class="h5 mb-0"><a href="{% url 'curso:semester_detail' semester.pk %}" class="text-decoration-none">{{ semester.number }}º semestre</a></h3>
+      <button
+        type="button"
+        class="btn btn-link btn-sm p-0"
+        hx-get="{% url 'curso:semester_update' semester.pk %}"
+        hx-target="#semester-modal-content"
+        hx-swap="innerHTML"
+        data-bs-toggle="modal"
+        data-bs-target="#semester-edit-modal"
+      >Editar</button>
+    </div>
+    <ul class="list-unstyled mb-0">
+      {% for discipline in semester.disciplines.all %}
+      <li class="d-flex justify-content-between gap-3 py-1 border-top">
+        <span>{% if discipline.code %}<span class="text-muted">{{ discipline.code }}</span> {% endif %}{{ discipline.name }}</span>
+        <span class="text-muted text-nowrap">{{ discipline.class_load }} h</span>
+      </li>
+      {% empty %}
+      <li class="text-muted">Nenhuma disciplina neste semestre.</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>

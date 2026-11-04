@@ -1,0 +1,18 @@
+<tr id="student-row-{{ student.pk }}">
+  <td class="ps-3">{{ student.name }}</td>
+  <td>{{ student.rgm }}</td>
+  <td>{{ student.email }}</td>
+  <td><a href="{% url 'curso:course_detail' student.course.pk %}">{{ student.course.name }}</a></td>
+  <td class="text-end pe-3">
+    <button type="button" class="btn btn-sm btn-outline-secondary"
+      hx-get="{% url 'aluno:student_update' student.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Editar aluno"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Editar</button>
+    <button type="button" class="btn btn-sm btn-outline-danger"
+      hx-get="{% url 'aluno:student_delete' student.pk %}"
+      hx-target="#action-modal-content" hx-swap="innerHTML"
+      data-modal-title="Excluir aluno"
+      data-bs-toggle="modal" data-bs-target="#action-modal">Excluir</button>
+  </td>
+</tr>
