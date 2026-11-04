@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
  
  
@@ -47,6 +48,21 @@ class Semester(models.Model):
         verbose_name = "Semestre"
         verbose_name_plural = "Semestres"
         ordering = ["course", "number"]
- 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["course", "number"],
+                name="unique_semester_per_course",
+                violation_error_message="Este curso já possui um semestre com esse número.",
+            ),
+        ]
+
+    def clean(self):
+        if self.number is not None and self.number < 1:
+            raise ValidationError({"number": "O número do semestre deve ser 1 ou maior."})
+        if self.course_id and self.number and self.number > self.course.duration_semesters:
+            raise ValidationError({
+                "number": f"O curso {self.course} tem só {self.course.duration_semesters} semestres."
+            })
+
     def __str__(self):
         return f"{self.course.name} - {self.number}º semestre"
