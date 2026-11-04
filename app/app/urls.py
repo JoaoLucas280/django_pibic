@@ -15,9 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_not_required
 from django.urls import include, path
 
+from aluno.views import PublicReportCardView
+from curso.views import dashboard
+
 urlpatterns = [
+    path('', dashboard, name='home'),
+    # Única página pública (fora do LoginRequiredMiddleware): boletim aberto pelo QR Code, com token assinado
+    path('boletim/<str:token>/', login_not_required(PublicReportCardView.as_view()), name='report_card_public'),
     path('admin/', admin.site.urls),
     path("cursos/", include("curso.urls")),
     path("alunos/", include("aluno.urls")),
