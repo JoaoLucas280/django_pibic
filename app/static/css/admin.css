@@ -1,0 +1,14 @@
+/* Mesma identidade visual do sistema (azul #034EA1 + amarelo #FDB913) no admin e na tela de login */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
+body, .login-box-msg, .btn { font-family: "Montserrat", system-ui, sans-serif; }
+body.login-page { background: #034ea1 !important; }
+.login-box-msg { color: #034ea1; font-weight: 700; text-transform: uppercase; }
+.login-page .btn-primary,
+.login-page .btn-block {
+  background: #fdb913; border-color: #fdb913; color: #034ea1;
+  font-weight: 700; text-transform: uppercase;
+}
+.login-page .btn-primary:hover { background: #e5a50a; border-color: #e5a50a; color: #034ea1; }
+.main-header.navbar { background: #034ea1 !important; }
+.main-header .nav-link { color: #fff !important; }

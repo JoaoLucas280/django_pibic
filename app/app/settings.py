@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m_a)34f*6z8^hrp0e5$=n*$lcv!*^_&qyl5m0*8sp6lw6+(2y7'
+# Configuração por variáveis de ambiente. Sem nenhuma definida, roda em modo desenvolvimento.
+# Produção: DJANGO_DEBUG=0, DJANGO_SECRET_KEY=<chave longa> e DJANGO_ALLOWED_HOSTS=meusite.com
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured('Defina DJANGO_SECRET_KEY para rodar em produção.')
+    SECRET_KEY = 'django-insecure-somente-para-desenvolvimento-local'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h]
+if DEBUG and not ALLOWED_HOSTS:
+    # Desenvolvimento: aceita o IP da rede local (celular abrindo o QR Code), seja qual for o Wi-Fi.
+    # Produção (DEBUG=0) continua exigindo DJANGO_ALLOWED_HOSTS explícito.
+    ALLOWED_HOSTS = ['*']
+
+# Em produção (HTTPS), cookies só trafegam criptografados e HTTP é redirecionado.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+# ponytail: HSTS desligado de propósito; ligar (SECURE_HSTS_SECONDS) só depois de o HTTPS estar estável no domínio
 
 
 # Application definition
@@ -46,8 +63,10 @@ JAZZMIN_SETTINGS = {
     'site_title': 'Gestão Acadêmica',
     'site_header': 'Gestão Acadêmica',
     'site_brand': 'Gestão Acadêmica',
+    'welcome_sign': 'Acesse a Gestão Acadêmica',
+    'custom_css': 'css/admin.css',
     'topmenu_links': [
-        {'name': 'Tela principal', 'url': '/cursos/'},
+        {'name': 'Tela principal', 'url': '/'},
     ],
 }
 
@@ -61,11 +80,16 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.LoginRequiredMiddleware',  # toda página exige login
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
+
+# ponytail: reaproveita a tela de login do admin (só usuários "equipe"); criar tela própria se alunos forem logar
+LOGIN_URL = 'admin:login'
+LOGOUT_REDIRECT_URL = 'admin:login'
 
 TEMPLATES = [
     {
@@ -120,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Campo_Grande'
 
 USE_I18N = True
 
@@ -131,13 +155,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
-
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Bootstrap e HTMX locais: funciona sem internet
