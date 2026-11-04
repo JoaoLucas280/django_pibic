@@ -13,7 +13,6 @@ from .views import (
     SemesterCreateView,
     SemesterDeleteView,
     SemesterDetailView,
-    SemesterListView,
     SemesterUpdateView,
 )
 
@@ -41,7 +40,6 @@ urlpatterns = [
         DisciplineDeleteView.as_view(),
         name="discipline_delete",
     ),
-    path("semestres/", SemesterListView.as_view(), name="semester_list"),
     path("semestres/novo/", SemesterCreateView.as_view(), name="semester_create"),
     path(
         "semestres/<int:pk>/",
