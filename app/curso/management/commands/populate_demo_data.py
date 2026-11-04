@@ -1,7 +1,9 @@
+from decimal import Decimal
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from aluno.models import Student
+from aluno.models import Enrollment, Student
 
 from curso.models import Course, Discipline, Semester
 
@@ -196,6 +198,7 @@ class Command(BaseCommand):
         created_disciplines = 0
         created_semesters = 0
         created_students = 0
+        created_enrollments = 0
         disciplines = {}
 
         for code, (name, class_load) in DISCIPLINES.items():
@@ -232,21 +235,40 @@ class Command(BaseCommand):
                 last_name = LAST_NAMES[
                     (course_index + student_number - 2) % len(LAST_NAMES)
                 ]
-                _, was_created = Student.objects.get_or_create(
+                student, was_created = Student.objects.get_or_create(
                     email=f"demo.aluno{course_index:02d}.{student_number:02d}@example.com",
                     defaults={
                         "name": f"{first_name} {last_name}",
-                        "rgm": f"D{course_index:02d}{student_number:04d}",
+                        "rgm": f"{course_index:02d}{student_number:05d}",
                         "course": course,
                     },
                 )
                 created_students += was_created
+                created_enrollments += self.enroll_demo_student(student, course)
 
         self.stdout.write(
             self.style.SUCCESS(
                 "Dados de demonstração prontos. "
                 f"Criados nesta execução: {created_courses} cursos, "
                 f"{created_disciplines} disciplinas, {created_semesters} semestres, "
-                f"{created_students} alunos."
+                f"{created_students} alunos, {created_enrollments} matrículas."
             )
         )
+
+    def enroll_demo_student(self, student, course):
+        """1º semestre já avaliado (com aprovações e reprovações); 2º semestre em andamento."""
+        created = 0
+        for semester in course.semesters.filter(number__lte=2).prefetch_related("disciplines"):
+            for discipline in semester.disciplines.all():
+                defaults = {}
+                if semester.number == 1:
+                    seed = student.pk * 7 + discipline.pk * 3  # determinístico: mesma nota a cada execução
+                    defaults = {
+                        "grade": Decimal(4) + Decimal(seed % 61) / 10,  # 4,0 a 10,0
+                        "attendance": 70 + seed % 31,  # 70% a 100%: poucas reprovações por falta
+                    }
+                _, was_created = Enrollment.objects.get_or_create(
+                    student=student, discipline=discipline, defaults=defaults
+                )
+                created += was_created
+        return created
