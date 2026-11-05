@@ -1,3 +1,10 @@
+
+
+
+
+https://github.com/user-attachments/assets/be1691f9-215a-4c55-ac92-fe4ef8917f19
+
+
 # Gestão Acadêmica
 
 Sistema web de gestão acadêmica desenvolvido com Django. Permite administrar cursos, disciplinas, semestres, alunos e matrículas, além de consultar e compartilhar boletins.
